@@ -21,7 +21,6 @@ public class FakeStoreDTO {
 
     public Product ToProduct(){
         Product p = new Product();
-        p.setProductID(this.id);
         p.setProductName(this.title);
         p.setPrice(this.price);
         p.setDescription(this.description);
