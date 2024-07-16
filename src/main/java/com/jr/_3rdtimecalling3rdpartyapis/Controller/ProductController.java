@@ -2,6 +2,7 @@ package com.jr._3rdtimecalling3rdpartyapis.Controller;
 
 import com.jr._3rdtimecalling3rdpartyapis.Models.Product;
 import com.jr._3rdtimecalling3rdpartyapis.Service.ProductService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public class ProductController {
 
     private ProductService productService;
-    public ProductController(ProductService ps) {
+    public ProductController(@Qualifier("DBService") ProductService ps) {
         this.productService = ps;
     }
 
@@ -34,8 +35,9 @@ public class ProductController {
         return productService.GetInCategory(categoryName);
     }
 
-    @PostMapping("/products/")
+    @PostMapping("/products")
     public Product AddProduct(@RequestBody Product product) {
+
         return productService.AddProduct(product);
     }
 
