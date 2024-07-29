@@ -1,20 +1,21 @@
 package com.jr._3rdtimecalling3rdpartyapis.Service;
 
+import com.jr._3rdtimecalling3rdpartyapis.Exceptions.ProductNotFoundException;
 import com.jr._3rdtimecalling3rdpartyapis.Models.Category;
 import com.jr._3rdtimecalling3rdpartyapis.Models.Product;
 import com.jr._3rdtimecalling3rdpartyapis.Repository.CategoryRepository;
 import com.jr._3rdtimecalling3rdpartyapis.Repository.ProductRepository;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.ManyToOne;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+import java.util.Optional;
+@Repository
 @Service("DBService")
 public class DBService implements ProductService{
 
-    private ProductRepository productRepository;
-    private CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
     public DBService(ProductRepository pr, CategoryRepository cr) {
         this.productRepository = pr;
@@ -22,24 +23,30 @@ public class DBService implements ProductService{
     }
 
     @Override
-    public Product GetProductByID(long ProductID) {
-        return null;
+    public Product GetProductByID(long productID) throws ProductNotFoundException {
+        Optional<Product> p = productRepository.findById(productID);
+        if (p.isPresent()) {
+            return p.get();
+        }
+
+        throw new ProductNotFoundException("Product not found ra");
     }
 
     @Override
     public List<Product> GetAllProducts() {
-        return List.of();
+        return productRepository.findAll();
     }
 
     @Override
-    public List<String> GetAllCategories() {
-        return List.of();
+    public List<Category> GetAllCategories() {
+        return categoryRepository.findAllCategories();
     }
 
-    @Override
-    public List<Product> GetInCategory(String CategoryName) {
-        return List.of();
-    }
+//    @Override
+//    public List<Product> GetInCategory(String categoryName) {
+//        Category c = productRepository.findByCategory(categoryName);
+//
+//    }
 
     @Override
     public Product AddProduct(Product product) {
@@ -64,12 +71,26 @@ public class DBService implements ProductService{
     }
 
     @Override
-    public Product UpdateProduct(long productID, Product product) {
-        return null;
+    public void UpdateProduct(long ID, Product product) {
+        Product p = productRepository.findById(ID).orElseThrow();
+
+        p.setProductName(product.getProductName());
+        p.setDescription(product.getDescription());
+        p.setImageURL(product.getImageURL());
+        p.setPrice(product.getPrice());
+        Category cdb = categoryRepository.findByCategoryName(product.getCategory().getCategoryName());
+        if (cdb == null) {
+            Category newc = new Category();
+            newc.setCategoryName(product.getCategory().getCategoryName());
+            Category newCat = categoryRepository.save(newc);
+            p.setCategory(newCat);
+        }
+
+        productRepository.save(p);
     }
 
     @Override
-    public Product DeleteProduct(long productID) {
-        return null;
+    public void DeleteProduct(long productID) {
+       productRepository.deleteById(productID);
     }
 }
