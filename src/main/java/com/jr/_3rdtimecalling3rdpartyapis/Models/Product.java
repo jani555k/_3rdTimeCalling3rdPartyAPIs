@@ -14,10 +14,21 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 public class Product extends BaseModel {
-    private String ProductName;
+    private String productName;
     private String Description;
     private double Price;
     private String ImageURL;
     @ManyToOne(cascade= CascadeType.PERSIST)
     private Category category;
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productName='" + productName + '\''+
+                ", Description='" + Description + '\''+
+                ", Price=" + Price +
+                ", imageUrl='" + ImageURL + '\'' +
+                ", category=" + category +
+                '}';
+    }
 }

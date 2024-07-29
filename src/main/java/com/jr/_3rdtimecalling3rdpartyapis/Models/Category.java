@@ -1,5 +1,6 @@
 package com.jr._3rdtimecalling3rdpartyapis.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -18,5 +19,6 @@ import java.util.List;
 public class Category extends BaseModel{
     private String categoryName;
     @OneToMany(mappedBy= "category", cascade= CascadeType.REMOVE)
+    @JsonIgnore
     private List<Product> Products;
 }
